@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Herbalife Prestige v65 - Large Text Stable</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --hl-green-deep: #2E5A1C; --hl-green-primary: #7AC142; --hl-white: #FFFFFF;
+            --hl-light-gray: #F4F7F6; --hl-text-dark: #333333; --hl-red: #FF3B30;
+            --hl-orange: #FF9500; --hl-gold: #FFD700;
+        }
+
+        body { display: flex; justify-content: center; align-items: center; min-height: 100dvh; margin: 0; background: linear-gradient(180deg, #e2e2e2 0%, #c9d6ff 100%); font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+
+        .live-counter { position: absolute; top: 12px; left: 22px; font-size: 1rem; font-weight: 900; color: var(--hl-white); display: flex; align-items: center; gap: 6px; z-index: 20; }
+        .live-dot { width: 8px; height: 8px; background: #7AC142; border-radius: 50%; box-shadow: 0 0 5px #7AC142; }
+
+        .slogan-area { position: absolute; top: 40px; left: 0; width: 100%; text-align: center; font-size: 0.82rem; font-weight: 800; color: #E9F5DC; padding: 0 20px; box-sizing: border-box; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); z-index: 15; line-height: 1.2; }
+
+        .stopwatch-container { 
+            width: 92%; max-width: 420px; 
+            height: 90dvh; max-height: 780px;
+            background-color: var(--hl-green-deep); padding: 15px 15px 20px 15px; border-radius: 40px; 
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; 
+            justify-content: space-between; color: var(--hl-white); border: 4px solid var(--hl-green-primary); 
+            box-sizing: border-box; position: relative;
+        }
+
+        .settings-btn { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; cursor: pointer; z-index: 10; color: rgba(255, 255, 255, 0.8); }
+
+        .display-wrapper { background-color: var(--hl-white); border-radius: 25px; padding: 10px 5px; margin-top: 45px; display: flex; flex-direction: column; align-items: center; box-shadow: inset 0 5px 15px rgba(0,0,0,0.1); width: 100%; position: relative; }
+        .display { color: var(--hl-text-dark); font-size: 4.2rem; font-weight: 900; font-family: 'Courier New', monospace; display: flex; gap: 0; letter-spacing: -12px; align-items: center; }
+        .display span { border-bottom: 2px dotted transparent; }
+        .display span[contenteditable="true"]:focus { border-bottom-color: var(--hl-green-primary); outline: none; }
+        
+        .status-text { font-weight: 900; margin-top: 2px; font-size: 1.3rem; min-height: 2.2rem; text-transform: uppercase; color: var(--hl-green-primary); text-align: center; display: flex; align-items: center; justify-content: center; }
+        
+        .mode-selection-bar { display: flex; justify-content: space-around; gap: 6px; margin-top: 8px; width: 100%; }
+        .mode-chip { padding: 6px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 800; background: #F4F7F6; color: var(--hl-green-deep); cursor: pointer; border: 2px solid var(--hl-green-primary); transition: all 0.2s; }
+        .mode-chip.active { background: var(--hl-green-primary); color: var(--hl-white); border-color: var(--hl-green-deep); }
+
+        /* [수정] v63 기반에서 글씨만 확대 */
+        .achievement-area { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 8px 0; width: 100%; }
+        
+        .badge-title-display { 
+            font-size: 2.2rem; /* 키움 */
+            font-weight: 900; 
+            color: var(--hl-gold); 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6); 
+            letter-spacing: 1px; 
+        }
+
+        .badge-streak-row { display: flex; justify-content: center; align-items: center; gap: 20px; width: 100%; }
+        .badge-box { width: 75px; height: 75px; background: rgba(255, 255, 255, 0.1); border-radius: 15px; display: flex; justify-content: center; align-items: center; border: 1px solid rgba(255, 255, 255, 0.2); overflow: hidden; }
+        .badge-box img { width: 90%; height: 90%; object-fit: contain; }
+
+        .badge-motivation-msg { 
+            font-size: 1.2rem; /* 키움 */
+            font-weight: 800; 
+            color: var(--hl-white); 
+            text-align: center; 
+            line-height: 1.3; 
+            margin-top: 2px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .streak-container { display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 1.6rem; color: var(--hl-white); text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .streak-flame { font-size: 2.1rem; }
+
+        .settings-area { display: flex; flex-direction: column; gap: 8px; margin: 5px 0; padding: 12px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; font-weight: 700; }
+        .interval-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-top: 5px; }
+        .setting-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 0.95rem; font-weight: 800; }
+        .stepper { display: flex; align-items: center; gap: 3px; }
+        .step-btn { width: 22px; height: 22px; border-radius: 5px; border: none; background: var(--hl-green-primary); color: white; font-weight: bold; cursor: pointer; }
+        
+        input[type="number"] { 
+            width: 55px; border: none; border-radius: 8px; text-align: center; 
+            font-weight: bold; font-size: 1.15rem; color: var(--hl-green-deep); padding: 4px 0;
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        input[type="checkbox"], input[type="radio"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--hl-green-primary); }
+        .disabled-group { opacity: 0.2; filter: grayscale(1); pointer-events: none; }
+
+        .button-group { display: flex; justify-content: center; gap: 12px; padding-bottom: 5px; margin-top: 5px; }
+        .btn { width: 78px; height: 78px; border-radius: 50%; border: none; color: white; font-weight: 900; cursor: pointer; transition: all 0.3s; font-size: 0.95rem; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .start-btn { background: var(--hl-green-primary); }
+        .stop-btn { background: #E74C3C; }
+        .reset-btn { background: #95A5A6; }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center; }
+        .modal-content { background: #E9F5DC; width: 90%; max-width: 380px; padding: 20px; border-radius: 30px; color: var(--hl-text-dark); box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 3px solid var(--hl-green-primary); box-sizing: border-box; }
+        .modal-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 15px; text-align: center; color: var(--hl-green-deep); }
+        .modal-box { background: var(--hl-white); border-radius: 15px; padding: 12px; margin-bottom: 12px; border: 1px solid #c9d8b8; }
+        .join-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; box-sizing: border-box; border: 2px solid var(--hl-green-primary); border-radius: 12px; padding: 10px; background: white; cursor: pointer; font-weight: 800; font-size: 1.1rem; text-decoration: none; color: var(--hl-text-dark); margin-bottom: 15px; }
+        .join-btn img { width: 30px; height: 30px; }
+        .close-btn { background: var(--hl-green-primary); color: white; width: 100%; padding: 12px; border: none; border-radius: 15px; font-weight: 800; font-size: 1.1rem; margin-top: 10px; cursor: pointer; }
+        .share-btn { background: #F7E600; color: #3A1D1D; width: 100%; padding: 12px; border: none; border-radius: 15px; font-weight: 800; font-size: 1.1rem; margin-top: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        .record-links { display: flex; justify-content: space-between; font-size: 1rem; margin: 10px 10px 5px 10px; }
+        .record-link { color: var(--hl-text-dark); cursor: pointer; text-decoration: underline; font-weight: 700; }
+
+        .club-grid-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
+        .club-input-group { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+        .club-input-group label { font-size: 0.85rem; font-weight: 800; color: var(--hl-green-deep); white-space: nowrap; }
+        .club-input-group input { width: 100%; box-sizing: border-box; padding: 8px; border-radius: 8px; border: 1px solid #ccc; font-weight: 700; font-size: 0.9rem; }
+        .club-btn { background: #e2efd9; border: 1px solid #70ad47; color: #385723; width: 100%; padding: 12px; border-radius: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px; }
+        .daily-warning { display: none; color: var(--hl-red); font-size: 0.85rem; font-weight: 700; margin-top: 10px; line-height: 1.4; text-align: center; }
+        
+        #data-display-area { margin-top: 10px; padding: 10px; background: #f0f4eb; border-radius: 10px; font-size: 0.9rem; display: none; }
+        .badge-collection { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; width: 100%; }
+        .badge-collection img { width: 35px !important; height: 35px !important; object-fit: contain; }
+    </style>
+</head>
+<body>
+
+<div class="stopwatch-container">
+    <div class="live-counter"><div class="live-dot"></div>오늘 함께한 사람 <span id="online-count">1</span> 명</div>
+    <div class="slogan-area" id="slogan-text">자식에게 짐이 되지 않는 건강, 허벅지 근육에서 나옵니다.</div>
+    <div id="settings-open-btn" class="settings-btn">⚙️</div>
+
+    <div class="display-wrapper">
+        <div class="display" id="display">
+            <span id="min-val" contenteditable="true">00</span>:<span id="sec-val" contenteditable="true">00</span>:<span id="ms-val" contenteditable="true">00</span>
+        </div>
+        <div class="status-text" id="status-text">READY</div> 
+        <div class="mode-selection-bar">
+            <div class="mode-chip active" id="mode-normal">기본 모드</div>
+            <div class="mode-chip" id="mode-middle">중장년 모드</div>
+            <div class="mode-chip" id="mode-silver">실버 모드</div>
+        </div>
+    </div>
+
+    <div class="achievement-area">
+        <div id="badge-name-label" class="badge-title-display">슈퍼바이저</div>
+        <div class="badge-streak-row">
+            <div class="badge-box"><img id="badge-icon" src="" alt="Badge"></div>
+            <div class="streak-container"><span class="streak-flame">🔥</span><span id="streak-count" contenteditable="true">0</span>일째</div>
+        </div>
+        <div id="badge-status-msg" class="badge-motivation-msg">목표를 향해 달려보세요!</div>
+    </div>
+
+    <div class="settings-area">
+        <div class="setting-row"><span>시간 모드</span><div style="display:flex; gap:10px;"><label><input type="radio" name="time-mode" value="60"> 60</label><label><input type="radio" name="time-mode" value="100" checked> 100</label></div></div>
+        <div class="setting-row"><span>인터벌 모드</span><input type="checkbox" id="interval-on"></div>
+        <div id="interval-inputs" class="disabled-group interval-grid">
+            <div class="setting-item">세트수 <div class="stepper"><button class="step-btn" id="sets-minus">-</button><input type="number" id="goal-sets" value="0"><button class="step-btn" id="sets-plus">+</button></div></div>
+            <div class="setting-item">운동시간 <div class="stepper"><button class="step-btn" id="work-minus">-</button><input type="number" id="work-time" value="0"><button class="step-btn" id="work-plus">+</button></div></div>
+            <div class="setting-item">휴식시간 <div class="stepper"><button class="step-btn" id="rest-minus">-</button><input type="number" id="rest-time" value="0"><button class="step-btn" id="rest-plus">+</button></div></div>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <button id="reset-btn" class="btn reset-btn">RESET</button>
+        <button id="start-btn" class="btn start-btn">START</button>
+        <button id="stop-btn" class="btn stop-btn">STOP</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="report-modal">
+    <div class="modal-content">
+        <div class="modal-title">🏆 성과 리포트</div>
+        <div id="report-main-msg" style="font-size: 1.1rem; font-weight: 800; color: var(--hl-green-deep); text-align: center; margin: 15px 0; line-height: 1.5;"></div>
+        <button class="share-btn" id="kakao-share-btn">💬 큰 글씨로 카톡 공유</button>
+        <button class="close-btn" id="report-close-btn">확인</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="settings-modal">
+    <div class="modal-content" id="settings-main-view">
+        <div class="modal-title" id="club-title-header">나이스점핑</div>
+        <div id="join-go-btn" class="join-btn"><img id="join-logo" src="" alt="logo"> 허벌라이프 회원가입</div>
+        <div class="modal-box">
+            <span class="modal-label" style="display:block; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight:900;">기록 관리</span>
+            <div class="record-links">
+                <span class="record-link" id="view-record-btn">나의 운동기록</span>
+                <span class="record-link" id="view-badges-btn">내가 모은 배지</span>
+            </div>
+            <div id="data-display-area"></div>
+            <span class="reset-link" id="full-reset-btn" style="color: var(--hl-red); cursor: pointer; display: block; text-align: center; margin-top: 15px; font-weight: 800;">기록 초기화</span>
+        </div>
+        <div class="modal-box">
+            <span class="modal-label" style="display:block; text-align: center; font-weight:900; margin-bottom:10px;">운동 모드 설정</span>
+            <div style="display:flex; justify-content:space-around; align-items:center; width:100%;"><label><input type="radio" name="streak-mode" value="cumulative" checked> 운동한 날만</label><label><input type="radio" name="streak-mode" value="daily"> 매일 매일</label></div>
+            <div id="daily-warning-text" class="daily-warning">하루라도 운동을 안하면 다시 0일 부터 시작합니다.</div>
+        </div>
+        <button id="open-club-settings" class="club-btn">🏷️ 클럽정보 설정</button>
+        <button id="settings-close-btn" class="close-btn">확인</button>
+    </div>
+
+    <div class="modal-content" id="club-settings-view" style="display:none;">
+        <div class="modal-title">클럽 정보 관리</div>
+        <div class="modal-box">
+            <div class="club-input-group" style="margin-bottom:12px; border-bottom:1px dashed #ddd; padding-bottom:10px;">
+                <label>멤버 ID</label><input type="text" id="club-member-id" placeholder="82y2040563">
+            </div>
+            <label style="display:block; font-size:0.9rem; font-weight:900; color:var(--hl-green-deep); margin-bottom:8px;">스폰서 이름</label>
+            <div class="club-grid-box">
+                <div class="club-input-group"><label>이름</label><input type="text" id="club-name-kor" placeholder="미옥"></div>
+                <div class="club-input-group"><label>First Name</label><input type="text" id="club-name-eng" placeholder="Mi Ok"></div>
+                <div class="club-input-group"><label>성</label><input type="text" id="club-last-kor" placeholder="강"></div>
+                <div class="club-input-group"><label>Last Name</label><input type="text" id="club-last-eng" placeholder="Kang"></div>
+            </div>
+            <div class="club-input-group" style="margin-top:5px;"><label>클럽 이름</label><input type="text" id="club-display-name" placeholder="나이스점핑"></div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:15px; padding-top:10px; border-top:1px dashed #ccc;">
+                <div class="club-input-group" style="flex:1;"><label>암호설정 (4자리)</label><input type="password" id="club-pw" maxlength="4" style="width:70px;"></div>
+                <div style="display:flex; align-items:center; gap:8px;"><span style="font-size:0.9rem; font-weight:900;">잠금</span><input type="checkbox" id="club-lock" checked></div>
+            </div>
+        </div>
+        <button id="club-save-back" class="close-btn">뒤로가기 및 저장</button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+    var firebaseConfig = { apiKey: "AIzaSyACP750T_12KThV_UjVQLqI-8tRPkV4-Fc", authDomain: "stop-watch-cf875.firebaseapp.com", projectId: "stop-watch-cf875", storageBucket: "stop-watch-cf875.firebasestorage.app", messagingSenderId: "132909896998", appId: "1:132909896998:web:a59454e98bb91dfa5d5de7" };
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
+    var todayStr = new Date().toISOString().split('T')[0];
+    var dailyRef = database.ref('dailyStats/' + todayStr);
+    var lastCheckIn = localStorage.getItem('lastParticipantCheckInDate');
+    if (lastCheckIn !== todayStr) { dailyRef.transaction(function(curr) { return (curr || 0) + 1; }); localStorage.setItem('lastParticipantCheckInDate', todayStr); }
+    dailyRef.on('value', function(snap) { document.getElementById('online-count').innerText = snap.val() || 1; });
+
+    const SLOGANS = ["자식에게 짐이 되지 않는 건강, 허벅지 근육에서 나옵니다.", "약은 지방을 빼주지만, 근육은 당신이 지켜야 합니다.", "이 타이머가 삑- 울릴 때까지 버티세요. 수명이 늘어납니다.", "오늘 하루 운동이 당신의 백세를 결정합니다.", "근육은 저금통입니다. 오늘 조금씩 저금하세요!"];
+    const IMG_URLS = { badge1: "https://i.ibb.co/29wC93R/badge1.png", badge2: "https://i.ibb.co/KcS1R4tR/badge2.png", badge3: "https://i.ibb.co/B2WBSkvH/badge3.png", badge4: "https://i.ibb.co/HfyH1MYH/badge4.png", badge5: "https://i.ibb.co/WNBYY0tM/badge5.png", badge6: "https://i.ibb.co/CR0jVD3/badge6.png", badge7: "https://i.ibb.co/KcZndrJ7/badge7.png", badge8: "https://i.ibb.co/JjxDDr2Q/badge8.png", badge9: "https://i.ibb.co/k2912tWn/badge9.png" };
+    Object.values(IMG_URLS).forEach(url => { const img = new Image(); img.src = url; });
+
+    const badgeMap = [ { day: 300, file: IMG_URLS.badge9, name: '파운더스클럽' }, { day: 200, file: IMG_URLS.badge8, name: '체어맨스클럽' }, { day: 150, file: IMG_URLS.badge7, name: '프레지던트팀' }, { day: 100, file: IMG_URLS.badge6, name: '7500 밀리어네어팀' }, { day: 50,  file: IMG_URLS.badge5, name: '밀리어네어팀' }, { day: 30,  file: IMG_URLS.badge4, name: '2500 겟팀' }, { day: 10,  file: IMG_URLS.badge3, name: '겟팀' }, { day: 3,   file: IMG_URLS.badge2, name: '월드팀' }, { day: 0,   file: IMG_URLS.badge1, name: '슈퍼바이저' } ];
+
+    var startTime, elapsedTime = 0, timerInterval, restInterval, audioCtx;
+    var currentRep = 0, isResting = false, workStartMs = 0, lastTickSecond = -1;
+    var totalTime = { today: 0, month: 0, all: 0, lastDate: "" };
+    var wakeLockObj = null;
+    var currentMode = 'normal';
+
+    function init() { loadStats(); initStreakUI(); loadClubDetailedInfo(); document.getElementById('join-logo').src = IMG_URLS.badge1; updateReadyStatus(); document.getElementById('slogan-text').innerText = SLOGANS[Math.floor(Math.random() * SLOGANS.length)]; }
+    function loadStats() { var saved = JSON.parse(localStorage.getItem('exerciseStats')) || { today: 0, month: 0, all: 0, lastDate: "" }; if (saved.lastDate !== new Date().toDateString()) saved.today = 0; totalTime = saved; }
+    function initStreakUI() { var streak = parseInt(localStorage.getItem('streakCount')) || 0; var mode = localStorage.getItem('streakMode') || 'cumulative'; document.querySelector('input[name="streak-mode"][value="' + mode + '"]').checked = true; document.getElementById('daily-warning-text').style.display = (mode === 'daily') ? 'block' : 'none'; document.getElementById('streak-count').innerText = streak; updateBadgeDisplay(streak); }
+    function updateBadgeDisplay(streak) { var currentIdx = badgeMap.findIndex(function(b) { return streak >= b.day; }); var currentBadge = badgeMap[currentIdx]; if (currentBadge) { document.getElementById('badge-icon').src = currentBadge.file; document.getElementById('badge-name-label').innerText = currentBadge.name; if (streak >= 300) document.getElementById('badge-status-msg').innerText = "당신은 세계적인 파운더스 클럽입니다~^^"; else { var nextBadge = badgeMap[currentIdx - 1]; if (nextBadge) document.getElementById('badge-status-msg').innerText = "다음 " + nextBadge.name + "까지 " + (nextBadge.day - streak) + "일 남았습니다!"; } } }
+    function updateReadyStatus() { if (!timerInterval && !isResting) { var f = function(ms) { var s = Math.floor(ms/1000); return Math.floor(s/3600) + "시간 " + Math.floor((s%3600)/60) + "분 " + (s%60) + "초"; }; document.getElementById('status-text').innerText = "오늘 누적: " + f(totalTime.today); document.getElementById('status-text').style.color = "var(--hl-green-primary)"; document.getElementById('status-text').style.fontSize = "0.9rem"; } }
+    function safeWakeLock() { if (typeof navigator !== 'undefined' && navigator.wakeLock) { try { navigator.wakeLock.request('screen').then(function(l) { wakeLockObj = l; }).catch(function(){}); } catch(e) {} } }
+    function releaseWakeLock() { if (wakeLockObj) { try { wakeLockObj.release(); wakeLockObj = null; } catch(e) {} } }
+    function playTick() { try { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); var now = audioCtx.currentTime; var osc = audioCtx.createOscillator(); var gain = audioCtx.createGain(); osc.type = 'sine'; osc.frequency.setValueAtTime(150, now); osc.frequency.exponentialRampToValueAtTime(40, now + 0.02); gain.gain.setValueAtTime(0.12, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.02); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + 0.02); var click = audioCtx.createOscillator(); var clickGain = audioCtx.createGain(); click.frequency.setValueAtTime(2500, now); clickGain.gain.setValueAtTime(0.04, now); clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.01); click.connect(clickGain); clickGain.connect(audioCtx.destination); click.start(now); click.stop(now + 0.01); } catch(e) {} }
+    function playSound(freq, duration, volume) { try { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); var osc = audioCtx.createOscillator(); var gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value = freq; gain.gain.setValueAtTime(volume || 0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration); osc.start(); osc.stop(audioCtx.currentTime + duration); } catch(e) {} }
+    function startTimer() { if (timerInterval || isResting) return; if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); syncTimeFromDisplay(); var goal = parseInt(document.getElementById('goal-sets').value) || 0; if (document.getElementById('interval-on').checked && goal > 0 && currentRep >= goal) { currentRep = 0; elapsedTime = 0; workStartMs = 0; renderDisplay(0); } safeWakeLock(); startTime = Date.now(); lastTickSecond = Math.floor(elapsedTime / 1000); timerInterval = setInterval(update, 10); document.getElementById('status-text').style.color = "var(--hl-red)"; document.getElementById('status-text').style.fontSize = "1.5rem"; }
+    function update() { var now = Date.now(); var diff = now - startTime + elapsedTime; var curSec = Math.floor((diff + 50) / 1000); if (!isResting && curSec > lastTickSecond) { playTick(); lastTickSecond = curSec; } if (document.getElementById('interval-on').checked && !isResting) { var workVal = parseInt(document.getElementById('work-time').value) || 0; var restVal = parseInt(document.getElementById('rest-time').value) || 0; var goal = parseInt(document.getElementById('goal-sets').value) || 0; if (workVal > 0 || restVal > 0 || goal > 0) { var workMs = workVal * 1000; if (diff >= workStartMs + workMs) { elapsedTime = workStartMs + workMs; renderDisplay(elapsedTime); addExerciseTime(workMs); currentRep++; if (goal > 0 && currentRep >= goal) { var f = function(ms) { var s = Math.floor(ms/1000); return Math.floor(s/60) + "분 " + (s%60) + "초"; }; var streak = parseInt(localStorage.getItem('streakCount')) || 0; var totalScore = Math.floor(totalTime.all / 60000); var prizeMsg = ""; if (streak >= 100 && totalScore >= 500) prizeMsg = "<br><span style='color:var(--hl-gold);'>쉐이크 당첨! 코치님에 증명서를 보내세요!</span>"; else if (streak >= 60 && totalScore >= 300) prizeMsg = "<br><span style='color:var(--hl-gold);'>운동밴드 당첨! 코치님에 증명서를 보내세요!</span>"; else if (streak >= 30 && totalScore >= 150) prizeMsg = "<br><span style='color:var(--hl-gold);'>물통 당첨! 코치님에 증명서를 보내세요!</span>"; var msg = "오늘 총 " + f(totalTime.today) + " 달성!<br><span style='color:var(--hl-gold); font-size:1.4rem;'>오늘의 근육 지수: " + Math.floor(totalTime.today/60000) + "점</span><br>"; if(currentMode === 'middle') msg += "<span style='color:var(--hl-red);'>지금 바로 쉐이크 한 잔!<br>근손실 방어 골든타임입니다.</span>"; else if(currentMode === 'silver') msg += "<span style='color:var(--hl-green-primary);'>수고하셨습니다!<br>활력을 위해 물 한 잔 드세요.</span>"; document.getElementById('report-main-msg').innerHTML = msg + prizeMsg; stopEngine("FINISH!"); confetti(); updateStreakLogic(); document.getElementById('report-modal').style.display = 'flex'; return; } startRestCycle(); return; } } } renderDisplay(diff); if (!isResting) document.getElementById('status-text').innerText = document.getElementById('interval-on').checked ? "SET " + (currentRep + 1) + "/" + (document.getElementById('goal-sets').value || 0) + " RUN" : "RUN"; }
+    function addExerciseTime(ms) { totalTime.today += ms; totalTime.month = (totalTime.month || 0) + ms; totalTime.all = (totalTime.all || 0) + ms; totalTime.lastDate = new Date().toDateString(); localStorage.setItem('exerciseStats', JSON.stringify(totalTime)); updateReadyStatus(); }
+    function stopEngine(status) { releaseWakeLock(); if (timerInterval) { var session = Date.now() - startTime; if (session > 500 && !document.getElementById('interval-on').checked) { addExerciseTime(session); updateStreakLogic(); } elapsedTime += session; clearInterval(timerInterval); timerInterval = null; } if (restInterval) { clearInterval(restInterval); restInterval = null; } isResting = false; if (status !== "FINISH!") updateReadyStatus(); }
+    function startRestCycle() { clearInterval(timerInterval); timerInterval = null; isResting = true; var left = parseInt(document.getElementById('rest-time').value) || 0; document.getElementById('status-text').innerText = "REST " + left; document.getElementById('status-text').style.color = "#FFB800"; restInterval = setInterval(function() { if (left <= 3 && left > 0) playSound(440, 0.15, 0.1); left--; if (left > 0) document.getElementById('status-text').innerText = "REST " + left; if (left <= 0) { clearInterval(restInterval); isResting = false; workStartMs = elapsedTime; playSound(1000, 0.2, 0.2); startTimer(); } }, 1000); }
+    function updateStreakLogic() { var today = new Date().toDateString(), last = localStorage.getItem('lastSuccessDate'); if (last !== today) { var s = (parseInt(localStorage.getItem('streakCount')) || 0) + 1; localStorage.setItem('lastSuccessDate', today); localStorage.setItem('streakCount', s); document.getElementById('streak-count').innerText = s; updateBadgeDisplay(s); } }
+    function renderDisplay(d) { var base = parseInt(document.querySelector('input[name="time-mode"]:checked').value); var c = Math.floor(d / 10); document.getElementById('min-val').innerText = Math.floor(c/100/base).toString().padStart(2,'0'); document.getElementById('sec-val').innerText = (Math.floor(c/100)%base).toString().padStart(2,'0'); document.getElementById('ms-val').innerText = (c%100).toString().padStart(2,'0'); }
+    function syncTimeFromDisplay() { var m = parseInt(document.getElementById('min-val').innerText)||0, s = parseInt(document.getElementById('sec-val').innerText)||0, ms = parseInt(document.getElementById('ms-val').innerText)||0; var b = parseInt(document.querySelector('input[name="time-mode"]:checked').value); elapsedTime = ((m * b + s) * 1000) + (ms * 10); workStartMs = elapsedTime; }
+    function applyMode(mode) { currentMode = mode; document.querySelectorAll('.mode-chip').forEach(function(c){ c.classList.remove('active'); }); document.getElementById('mode-' + mode).classList.add('active'); stopEngine("PAUSED"); elapsedTime = 0; currentRep = 0; workStartMs = 0; renderDisplay(0); var intervalOn = document.getElementById('interval-on'); var inputs = document.getElementById('interval-inputs'); if(mode === 'middle') { intervalOn.checked = true; inputs.classList.remove('disabled-group'); document.getElementById('goal-sets').value = 3; document.getElementById('work-time').value = 100; document.getElementById('rest-time').value = 30; } else if(mode === 'silver') { intervalOn.checked = true; inputs.classList.remove('disabled-group'); document.getElementById('goal-sets').value = 5; document.getElementById('work-time').value = 30; document.getElementById('rest-time').value = 60; } else { intervalOn.checked = false; inputs.classList.add('disabled-group'); document.getElementById('goal-sets').value = 0; document.getElementById('work-time').value = 0; document.getElementById('rest-time').value = 0; } }
+
+    function loadClubDetailedInfo() {
+        var info = JSON.parse(localStorage.getItem('clubDetailedSettings'));
+        if (!info || info.pw === "0000") {
+            info = { memberId: "82y2040563", nameKor: "미옥", nameEng: "Mi Ok", lastKor: "강", lastEng: "Kang", displayName: "나이스점핑", pw: "0608", locked: true };
+            localStorage.setItem('clubDetailedSettings', JSON.stringify(info));
+        }
+        document.getElementById('club-member-id').value = info.memberId;
+        document.getElementById('club-name-kor').value = info.nameKor;
+        document.getElementById('club-name-eng').value = info.nameEng;
+        document.getElementById('club-last-kor').value = info.lastKor;
+        document.getElementById('club-last-eng').value = info.lastEng;
+        document.getElementById('club-display-name').value = info.displayName;
+        document.getElementById('club-pw').value = info.pw;
+        document.getElementById('club-lock').checked = info.locked;
+        applyLockUI(info.locked);
+        document.getElementById('club-title-header').innerText = info.displayName || "설정";
+    }
+    function saveClubDetailedInfo() { var isLocked = document.getElementById('club-lock').checked; var info = { memberId: document.getElementById('club-member-id').value, nameKor: document.getElementById('club-name-kor').value, nameEng: document.getElementById('club-name-eng').value, lastKor: document.getElementById('club-last-kor').value, lastEng: document.getElementById('club-last-eng').value, displayName: document.getElementById('club-display-name').value, pw: document.getElementById('club-pw').value || "0608", locked: isLocked }; localStorage.setItem('clubDetailedSettings', JSON.stringify(info)); document.getElementById('club-title-header').innerText = info.displayName || "설정"; }
+    function applyLockUI(locked) { var ids = ['club-member-id', 'club-name-kor', 'club-name-eng', 'club-last-kor', 'club-last-eng', 'club-display-name', 'club-pw']; ids.forEach(function(id) { document.getElementById(id).disabled = locked; }); }
+    document.getElementById('club-lock').onchange = function(e) { var saved = JSON.parse(localStorage.getItem('clubDetailedSettings')) || { pw: "0608" }; if (!e.target.checked) { var input = prompt("정보 수정을 위해 암호 4자리를 입력하세요."); if (input !== saved.pw) { alert("암호가 일치하지 않습니다."); e.target.checked = true; return; } } applyLockUI(e.target.checked); saveClubDetailedInfo(); };
+    document.getElementById('open-club-settings').onclick = function() { document.getElementById('settings-main-view').style.display = 'none'; document.getElementById('club-settings-view').style.display = 'block'; };
+    document.getElementById('club-save-back').onclick = function() { saveClubDetailedInfo(); document.getElementById('club-settings-view').style.display = 'none'; document.getElementById('settings-main-view').style.display = 'block'; };
+
+    document.getElementById('join-go-btn').onclick = function() {
+        var info = JSON.parse(localStorage.getItem('clubDetailedSettings')) || { memberId: "82y2040563", nameKor: "미옥", nameEng: "Mi Ok", lastKor: "강", lastEng: "Kang" };
+        var popupTxt = "Sponsor: " + info.lastKor + info.nameKor + "(" + info.memberId + ")\nFirst Name : " + info.nameKor + "(" + info.nameEng + ")  Last Name : " + info.lastKor + "(" + info.lastEng + ")";
+        alert(popupTxt); window.open('https://www.herbalife-application.com/kakao/join/joinMainindex.html', '_blank');
+    };
+
+    document.getElementById('kakao-share-btn').onclick = function() { var f = function(ms) { var s = Math.floor(ms/1000); return Math.floor(s/60) + "분 " + (s%60) + "초"; }; var score = Math.floor(totalTime.today / 60000); var streak = document.getElementById('streak-count').innerText; var text = "[🏆 오늘의 운동 증명서]\n날짜: " + todayStr + "\n운동시간: " + f(totalTime.today) + "\n근육 지수: " + score + "점 🔥\n연속 성공: " + streak + "일째\n\n\"" + document.getElementById('slogan-text').innerText + "\"\n\n다 같이 건강해져요! 😊"; navigator.clipboard.writeText(text).then(function() { alert("큰 글씨 기록지가 복사되었습니다!\n카톡창에 붙여넣기 하세요."); }); };
+    document.querySelectorAll('input[name="streak-mode"]').forEach(function(r) { r.onchange = function() { localStorage.setItem('streakMode', r.value); document.getElementById('daily-warning-text').style.display = (r.value === 'daily') ? 'block' : 'none'; }; });
+    document.getElementById('settings-open-btn').onclick = function() { document.getElementById('data-display-area').style.display = 'none'; document.getElementById('settings-modal').style.display = 'flex'; };
+    document.getElementById('settings-close-btn').onclick = function() { document.getElementById('settings-modal').style.display = 'none'; };
+    document.getElementById('mode-normal').onclick = function(){ applyMode('normal'); };
+    document.getElementById('mode-middle').onclick = function(){ applyMode('middle'); };
+    document.getElementById('mode-silver').onclick = function(){ applyMode('silver'); };
+    document.getElementById('start-btn').onclick = startTimer;
+    document.getElementById('stop-btn').onclick = function() { stopEngine("PAUSED"); };
+    document.getElementById('reset-btn').onclick = function() { stopEngine("PAUSED"); elapsedTime = 0; currentRep = 0; workStartMs = 0; renderDisplay(0); document.querySelectorAll('#interval-inputs input').forEach(function(i){ i.value = "0"; }); updateReadyStatus(); };
+    document.getElementById('view-record-btn').onclick = function() { document.getElementById('data-display-area').style.display = 'block'; var f = function(ms) { var s = Math.floor(ms/1000); return Math.floor(s/3600) + "시간 " + Math.floor((s%3600)/60) + "분 " + (s%60) + "초"; }; var score = Math.floor((totalTime.all || 0) / 60000); document.getElementById('data-display-area').innerHTML = "오늘: " + f(totalTime.today) + "<br>누적: " + f(totalTime.all || 0) + " (<span id='edit-all-score' contenteditable='true' style='border-bottom:1px dashed #7AC142;'>" + score + "</span>점)"; document.getElementById('edit-all-score').onblur = function() { var ns = parseInt(this.innerText.replace(/[^0-9]/g, '')) || 0; totalTime.all = ns * 60000; localStorage.setItem('exerciseStats', JSON.stringify(totalTime)); }; };
+    document.getElementById('view-badges-btn').onclick = function() { document.getElementById('data-display-area').style.display = 'block'; var s = parseInt(localStorage.getItem('streakCount')) || 0, h = '<div class="badge-collection">'; badgeMap.slice().reverse().forEach(function(b){ if(s >= b.day) h += '<img src="' + b.file + '" title="' + b.name + '">'; }); document.getElementById('data-display-area').innerHTML = h + '</div>'; };
+    document.getElementById('report-close-btn').onclick = function() { document.getElementById('report-modal').style.display = 'none'; updateReadyStatus(); };
+    document.getElementById('full-reset-btn').onclick = function() { if(confirm('기록을 초기화할까요?')) { localStorage.clear(); location.reload(); } };
+    document.getElementById('interval-on').onchange = function(e) { var div = document.getElementById('interval-inputs'); if (e.target.checked) div.classList.remove('disabled-group'); else div.classList.add('disabled-group'); };
+    function step(id, v) { var e = document.getElementById(id); var n = parseInt(e.value||0)+v; e.value = n < 0 ? 0 : n; }
+    document.getElementById('sets-plus').onclick = function() { step('goal-sets', 1); }; document.getElementById('sets-minus').onclick = function() { step('goal-sets', -1); };
+    document.getElementById('work-plus').onclick = function() { step('work-time', 1); }; document.getElementById('work-minus').onclick = function() { step('work-time', -1); };
+    document.getElementById('rest-plus').onclick = function() { step('rest-time', 1); }; document.getElementById('rest-minus').onclick = function() { step('rest-time', -1); };
+    document.getElementById('streak-count').onblur = function() { var v = parseInt(document.getElementById('streak-count').innerText.replace(/[^0-9]/g, ''))||0; localStorage.setItem('streakCount', v); updateBadgeDisplay(v); };
+
+    init();
+</script>
+</body>
+</html>
