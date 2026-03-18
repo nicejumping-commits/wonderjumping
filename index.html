@@ -172,7 +172,7 @@
 
 <div class="modal-overlay" id="settings-modal">
     <div class="modal-content" id="settings-main-view">
-        <div class="modal-title" id="club-title-header">나이스점핑</div>
+        <div class="modal-title" id="club-title-header">원더스점핑</div>
         <div id="join-go-btn" class="join-btn"><img id="join-logo" src="" alt="logo"> 허벌라이프 회원가입</div>
         <div class="modal-box">
             <span class="modal-label" style="display:block; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight:900;">기록 관리</span>
@@ -196,16 +196,16 @@
         <div class="modal-title">클럽 정보 관리</div>
         <div class="modal-box">
             <div class="club-input-group" style="margin-bottom:12px; border-bottom:1px dashed #ddd; padding-bottom:10px;">
-                <label>멤버 ID</label><input type="text" id="club-member-id" placeholder="82y2040563">
+                <label>멤버 ID</label><input type="text" id="club-member-id" placeholder="82y2103596">
             </div>
             <label style="display:block; font-size:0.9rem; font-weight:900; color:var(--hl-green-deep); margin-bottom:8px;">스폰서 이름</label>
             <div class="club-grid-box">
-                <div class="club-input-group"><label>이름</label><input type="text" id="club-name-kor" placeholder="미옥"></div>
-                <div class="club-input-group"><label>First Name</label><input type="text" id="club-name-eng" placeholder="Mi Ok"></div>
-                <div class="club-input-group"><label>성</label><input type="text" id="club-last-kor" placeholder="강"></div>
-                <div class="club-input-group"><label>Last Name</label><input type="text" id="club-last-eng" placeholder="Kang"></div>
+                <div class="club-input-group"><label>이름</label><input type="text" id="club-name-kor" placeholder="민영"></div>
+                <div class="club-input-group"><label>First Name</label><input type="text" id="club-name-eng" placeholder="MIN YEONG"></div>
+                <div class="club-input-group"><label>성</label><input type="text" id="club-last-kor" placeholder="오"></div>
+                <div class="club-input-group"><label>Last Name</label><input type="text" id="club-last-eng" placeholder="OH"></div>
             </div>
-            <div class="club-input-group" style="margin-top:5px;"><label>클럽 이름</label><input type="text" id="club-display-name" placeholder="나이스점핑"></div>
+            <div class="club-input-group" style="margin-top:5px;"><label>클럽 이름</label><input type="text" id="club-display-name" placeholder="원더스점핑"></div>
             <div style="display:flex; align-items:center; justify-content:space-between; margin-top:15px; padding-top:10px; border-top:1px dashed #ccc;">
                 <div class="club-input-group" style="flex:1;"><label>암호설정 (4자리)</label><input type="password" id="club-pw" maxlength="4" style="width:70px;"></div>
                 <div style="display:flex; align-items:center; gap:8px;"><span style="font-size:0.9rem; font-weight:900;">잠금</span><input type="checkbox" id="club-lock" checked></div>
@@ -262,7 +262,7 @@
     function loadClubDetailedInfo() {
         var info = JSON.parse(localStorage.getItem('clubDetailedSettings'));
         if (!info || info.pw === "0000") {
-            info = { memberId: "82y2040563", nameKor: "미옥", nameEng: "Mi Ok", lastKor: "강", lastEng: "Kang", displayName: "나이스점핑", pw: "0608", locked: true };
+            info = { memberId: "82y2103596", nameKor: "민영", nameEng: "MIN YEONG", lastKor: "오", lastEng: "OH", displayName: "원더스점핑", pw: "0000", locked: true };
             localStorage.setItem('clubDetailedSettings', JSON.stringify(info));
         }
         document.getElementById('club-member-id').value = info.memberId;
@@ -276,14 +276,14 @@
         applyLockUI(info.locked);
         document.getElementById('club-title-header').innerText = info.displayName || "설정";
     }
-    function saveClubDetailedInfo() { var isLocked = document.getElementById('club-lock').checked; var info = { memberId: document.getElementById('club-member-id').value, nameKor: document.getElementById('club-name-kor').value, nameEng: document.getElementById('club-name-eng').value, lastKor: document.getElementById('club-last-kor').value, lastEng: document.getElementById('club-last-eng').value, displayName: document.getElementById('club-display-name').value, pw: document.getElementById('club-pw').value || "0608", locked: isLocked }; localStorage.setItem('clubDetailedSettings', JSON.stringify(info)); document.getElementById('club-title-header').innerText = info.displayName || "설정"; }
+    function saveClubDetailedInfo() { var isLocked = document.getElementById('club-lock').checked; var info = { memberId: document.getElementById('club-member-id').value, nameKor: document.getElementById('club-name-kor').value, nameEng: document.getElementById('club-name-eng').value, lastKor: document.getElementById('club-last-kor').value, lastEng: document.getElementById('club-last-eng').value, displayName: document.getElementById('club-display-name').value, pw: document.getElementById('club-pw').value || "0000", locked: isLocked }; localStorage.setItem('clubDetailedSettings', JSON.stringify(info)); document.getElementById('club-title-header').innerText = info.displayName || "설정"; }
     function applyLockUI(locked) { var ids = ['club-member-id', 'club-name-kor', 'club-name-eng', 'club-last-kor', 'club-last-eng', 'club-display-name', 'club-pw']; ids.forEach(function(id) { document.getElementById(id).disabled = locked; }); }
-    document.getElementById('club-lock').onchange = function(e) { var saved = JSON.parse(localStorage.getItem('clubDetailedSettings')) || { pw: "0608" }; if (!e.target.checked) { var input = prompt("정보 수정을 위해 암호 4자리를 입력하세요."); if (input !== saved.pw) { alert("암호가 일치하지 않습니다."); e.target.checked = true; return; } } applyLockUI(e.target.checked); saveClubDetailedInfo(); };
+    document.getElementById('club-lock').onchange = function(e) { var saved = JSON.parse(localStorage.getItem('clubDetailedSettings')) || { pw: "0000" }; if (!e.target.checked) { var input = prompt("정보 수정을 위해 암호 4자리를 입력하세요."); if (input !== saved.pw) { alert("암호가 일치하지 않습니다."); e.target.checked = true; return; } } applyLockUI(e.target.checked); saveClubDetailedInfo(); };
     document.getElementById('open-club-settings').onclick = function() { document.getElementById('settings-main-view').style.display = 'none'; document.getElementById('club-settings-view').style.display = 'block'; };
     document.getElementById('club-save-back').onclick = function() { saveClubDetailedInfo(); document.getElementById('club-settings-view').style.display = 'none'; document.getElementById('settings-main-view').style.display = 'block'; };
 
     document.getElementById('join-go-btn').onclick = function() {
-        var info = JSON.parse(localStorage.getItem('clubDetailedSettings')) || { memberId: "82y2040563", nameKor: "미옥", nameEng: "Mi Ok", lastKor: "강", lastEng: "Kang" };
+        var info = JSON.parse(localStorage.getItem('clubDetailedSettings')) || { memberId: "82y2103596", nameKor: "민영", nameEng: "MIN YEONG", lastKor: "오", lastEng: "OH" };
         var popupTxt = "Sponsor: " + info.lastKor + info.nameKor + "(" + info.memberId + ")\nFirst Name : " + info.nameKor + "(" + info.nameEng + ")  Last Name : " + info.lastKor + "(" + info.lastEng + ")";
         alert(popupTxt); window.open('https://www.herbalife-application.com/kakao/join/joinMainindex.html', '_blank');
     };
