@@ -1,10 +1,20 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Herbalife Prestige v65 - Large Text Stable</title>
+    <title>Herbalife Prestige v66 - Club Isolation</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        /* ---------------------------------------------------------
+           [사용자 가이드] 
+           아래 CLUB_ID를 각 클럽의 영어 이름으로 바꿔서 저장하세요.
+           예: "nicejumping" 또는 "wonderjumping"
+           이 단어가 다르면 스마트폰에서 정보를 완전히 따로 저장합니다!
+        --------------------------------------------------------- */
+        const CLUB_ID = "wonderjumping"; 
+        /* --------------------------------------------------------- */
+    </script>
     <style>
         :root {
             --hl-green-deep: #2E5A1C; --hl-green-primary: #7AC142; --hl-white: #FFFFFF;
@@ -41,31 +51,12 @@
         .mode-chip { padding: 6px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 800; background: #F4F7F6; color: var(--hl-green-deep); cursor: pointer; border: 2px solid var(--hl-green-primary); transition: all 0.2s; }
         .mode-chip.active { background: var(--hl-green-primary); color: var(--hl-white); border-color: var(--hl-green-deep); }
 
-        /* [수정] v63 기반에서 글씨만 확대 */
         .achievement-area { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 8px 0; width: 100%; }
-        
-        .badge-title-display { 
-            font-size: 2.2rem; /* 키움 */
-            font-weight: 900; 
-            color: var(--hl-gold); 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.6); 
-            letter-spacing: 1px; 
-        }
-
+        .badge-title-display { font-size: 2.2rem; font-weight: 900; color: var(--hl-gold); text-shadow: 2px 2px 4px rgba(0,0,0,0.6); letter-spacing: 1px; }
         .badge-streak-row { display: flex; justify-content: center; align-items: center; gap: 20px; width: 100%; }
         .badge-box { width: 75px; height: 75px; background: rgba(255, 255, 255, 0.1); border-radius: 15px; display: flex; justify-content: center; align-items: center; border: 1px solid rgba(255, 255, 255, 0.2); overflow: hidden; }
         .badge-box img { width: 90%; height: 90%; object-fit: contain; }
-
-        .badge-motivation-msg { 
-            font-size: 1.2rem; /* 키움 */
-            font-weight: 800; 
-            color: var(--hl-white); 
-            text-align: center; 
-            line-height: 1.3; 
-            margin-top: 2px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-        }
-
+        .badge-motivation-msg { font-size: 1.2rem; font-weight: 800; color: var(--hl-white); text-align: center; line-height: 1.3; margin-top: 2px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
         .streak-container { display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 1.6rem; color: var(--hl-white); text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
         .streak-flame { font-size: 2.1rem; }
 
@@ -75,12 +66,7 @@
         .setting-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 0.95rem; font-weight: 800; }
         .stepper { display: flex; align-items: center; gap: 3px; }
         .step-btn { width: 22px; height: 22px; border-radius: 5px; border: none; background: var(--hl-green-primary); color: white; font-weight: bold; cursor: pointer; }
-        
-        input[type="number"] { 
-            width: 55px; border: none; border-radius: 8px; text-align: center; 
-            font-weight: bold; font-size: 1.15rem; color: var(--hl-green-deep); padding: 4px 0;
-            -moz-appearance: textfield;
-        }
+        input[type="number"] { width: 55px; border: none; border-radius: 8px; text-align: center; font-weight: bold; font-size: 1.15rem; color: var(--hl-green-deep); padding: 4px 0; -moz-appearance: textfield; }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
         input[type="checkbox"], input[type="radio"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--hl-green-primary); }
@@ -172,7 +158,7 @@
 
 <div class="modal-overlay" id="settings-modal">
     <div class="modal-content" id="settings-main-view">
-        <div class="modal-title" id="club-title-header">원더스점핑</div>
+        <div class="modal-title" id="club-title-header">원더점핑</div>
         <div id="join-go-btn" class="join-btn"><img id="join-logo" src="" alt="logo"> 허벌라이프 회원가입</div>
         <div class="modal-box">
             <span class="modal-label" style="display:block; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight:900;">기록 관리</span>
@@ -201,11 +187,11 @@
             <label style="display:block; font-size:0.9rem; font-weight:900; color:var(--hl-green-deep); margin-bottom:8px;">스폰서 이름</label>
             <div class="club-grid-box">
                 <div class="club-input-group"><label>이름</label><input type="text" id="club-name-kor" placeholder="민영"></div>
-                <div class="club-input-group"><label>First Name</label><input type="text" id="club-name-eng" placeholder="MIN YEONG"></div>
+                <div class="club-input-group"><label>First Name</label><input type="text" id="club-name-eng" placeholder="Mi Ok"></div>
                 <div class="club-input-group"><label>성</label><input type="text" id="club-last-kor" placeholder="오"></div>
-                <div class="club-input-group"><label>Last Name</label><input type="text" id="club-last-eng" placeholder="OH"></div>
+                <div class="club-input-group"><label>Last Name</label><input type="text" id="club-last-eng" placeholder="Kang"></div>
             </div>
-            <div class="club-input-group" style="margin-top:5px;"><label>클럽 이름</label><input type="text" id="club-display-name" placeholder="원더스점핑"></div>
+            <div class="club-input-group" style="margin-top:5px;"><label>클럽 이름</label><input type="text" id="club-display-name" placeholder="원더점핑"></div>
             <div style="display:flex; align-items:center; justify-content:space-between; margin-top:15px; padding-top:10px; border-top:1px dashed #ccc;">
                 <div class="club-input-group" style="flex:1;"><label>암호설정 (4자리)</label><input type="password" id="club-pw" maxlength="4" style="width:70px;"></div>
                 <div style="display:flex; align-items:center; gap:8px;"><span style="font-size:0.9rem; font-weight:900;">잠금</span><input type="checkbox" id="club-lock" checked></div>
@@ -228,7 +214,6 @@
     if (lastCheckIn !== todayStr) { dailyRef.transaction(function(curr) { return (curr || 0) + 1; }); localStorage.setItem('lastParticipantCheckInDate', todayStr); }
     dailyRef.on('value', function(snap) { document.getElementById('online-count').innerText = snap.val() || 1; });
 
-    const SLOGANS = ["자식에게 짐이 되지 않는 건강, 허벅지 근육에서 나옵니다.", "약은 지방을 빼주지만, 근육은 당신이 지켜야 합니다.", "이 타이머가 삑- 울릴 때까지 버티세요. 수명이 늘어납니다.", "오늘 하루 운동이 당신의 백세를 결정합니다.", "근육은 저금통입니다. 오늘 조금씩 저금하세요!"];
     const IMG_URLS = { badge1: "https://i.ibb.co/29wC93R/badge1.png", badge2: "https://i.ibb.co/KcS1R4tR/badge2.png", badge3: "https://i.ibb.co/B2WBSkvH/badge3.png", badge4: "https://i.ibb.co/HfyH1MYH/badge4.png", badge5: "https://i.ibb.co/WNBYY0tM/badge5.png", badge6: "https://i.ibb.co/CR0jVD3/badge6.png", badge7: "https://i.ibb.co/KcZndrJ7/badge7.png", badge8: "https://i.ibb.co/JjxDDr2Q/badge8.png", badge9: "https://i.ibb.co/k2912tWn/badge9.png" };
     Object.values(IMG_URLS).forEach(url => { const img = new Image(); img.src = url; });
 
@@ -241,6 +226,7 @@
     var currentMode = 'normal';
 
     function init() { loadStats(); initStreakUI(); loadClubDetailedInfo(); document.getElementById('join-logo').src = IMG_URLS.badge1; updateReadyStatus(); document.getElementById('slogan-text').innerText = SLOGANS[Math.floor(Math.random() * SLOGANS.length)]; }
+    const SLOGANS = ["자식에게 짐이 되지 않는 건강, 허벅지 근육에서 나옵니다.", "약은 지방을 빼주지만, 근육은 당신이 지켜야 합니다.", "이 타이머가 삑- 울릴 때까지 버티세요. 수명이 늘어납니다.", "오늘 하루 운동이 당신의 백세를 결정합니다.", "근육은 저금통입니다. 오늘 조금씩 저금하세요!"];
     function loadStats() { var saved = JSON.parse(localStorage.getItem('exerciseStats')) || { today: 0, month: 0, all: 0, lastDate: "" }; if (saved.lastDate !== new Date().toDateString()) saved.today = 0; totalTime = saved; }
     function initStreakUI() { var streak = parseInt(localStorage.getItem('streakCount')) || 0; var mode = localStorage.getItem('streakMode') || 'cumulative'; document.querySelector('input[name="streak-mode"][value="' + mode + '"]').checked = true; document.getElementById('daily-warning-text').style.display = (mode === 'daily') ? 'block' : 'none'; document.getElementById('streak-count').innerText = streak; updateBadgeDisplay(streak); }
     function updateBadgeDisplay(streak) { var currentIdx = badgeMap.findIndex(function(b) { return streak >= b.day; }); var currentBadge = badgeMap[currentIdx]; if (currentBadge) { document.getElementById('badge-icon').src = currentBadge.file; document.getElementById('badge-name-label').innerText = currentBadge.name; if (streak >= 300) document.getElementById('badge-status-msg').innerText = "당신은 세계적인 파운더스 클럽입니다~^^"; else { var nextBadge = badgeMap[currentIdx - 1]; if (nextBadge) document.getElementById('badge-status-msg').innerText = "다음 " + nextBadge.name + "까지 " + (nextBadge.day - streak) + "일 남았습니다!"; } } }
@@ -259,12 +245,22 @@
     function syncTimeFromDisplay() { var m = parseInt(document.getElementById('min-val').innerText)||0, s = parseInt(document.getElementById('sec-val').innerText)||0, ms = parseInt(document.getElementById('ms-val').innerText)||0; var b = parseInt(document.querySelector('input[name="time-mode"]:checked').value); elapsedTime = ((m * b + s) * 1000) + (ms * 10); workStartMs = elapsedTime; }
     function applyMode(mode) { currentMode = mode; document.querySelectorAll('.mode-chip').forEach(function(c){ c.classList.remove('active'); }); document.getElementById('mode-' + mode).classList.add('active'); stopEngine("PAUSED"); elapsedTime = 0; currentRep = 0; workStartMs = 0; renderDisplay(0); var intervalOn = document.getElementById('interval-on'); var inputs = document.getElementById('interval-inputs'); if(mode === 'middle') { intervalOn.checked = true; inputs.classList.remove('disabled-group'); document.getElementById('goal-sets').value = 3; document.getElementById('work-time').value = 100; document.getElementById('rest-time').value = 30; } else if(mode === 'silver') { intervalOn.checked = true; inputs.classList.remove('disabled-group'); document.getElementById('goal-sets').value = 5; document.getElementById('work-time').value = 30; document.getElementById('rest-time').value = 60; } else { intervalOn.checked = false; inputs.classList.add('disabled-group'); document.getElementById('goal-sets').value = 0; document.getElementById('work-time').value = 0; document.getElementById('rest-time').value = 0; } }
 
+    // [v66] 클럽별 독립 수첩(Storage Key) 시스템
+    const STORAGE_KEY = "clubDetailedSettings_" + CLUB_ID;
+
     function loadClubDetailedInfo() {
-        var info = JSON.parse(localStorage.getItem('clubDetailedSettings'));
-        if (!info || info.pw === "0000") {
-            info = { memberId: "82y2103596", nameKor: "민영", nameEng: "MIN YEONG", lastKor: "오", lastEng: "OH", displayName: "원더스점핑", pw: "0000", locked: true };
-            localStorage.setItem('clubDetailedSettings', JSON.stringify(info));
+        var info = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        
+        // v66: 저장된 정보가 없으면 CLUB_ID에 따른 초기 기본값 강제 적용
+        if (!info) {
+            info = { 
+                memberId: "82y2103596", nameKor: "민영", nameEng: "MIN YEOUNG", lastKor: "오", lastEng: "OH", 
+                displayName: (CLUB_ID === "nicejumping" ? "나이스점핑" : "원더점핑"), 
+                pw: "0000", locked: true 
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(info));
         }
+        
         document.getElementById('club-member-id').value = info.memberId;
         document.getElementById('club-name-kor').value = info.nameKor;
         document.getElementById('club-name-eng').value = info.nameEng;
@@ -273,17 +269,28 @@
         document.getElementById('club-display-name').value = info.displayName;
         document.getElementById('club-pw').value = info.pw;
         document.getElementById('club-lock').checked = info.locked;
+        
         applyLockUI(info.locked);
         document.getElementById('club-title-header').innerText = info.displayName || "설정";
     }
-    function saveClubDetailedInfo() { var isLocked = document.getElementById('club-lock').checked; var info = { memberId: document.getElementById('club-member-id').value, nameKor: document.getElementById('club-name-kor').value, nameEng: document.getElementById('club-name-eng').value, lastKor: document.getElementById('club-last-kor').value, lastEng: document.getElementById('club-last-eng').value, displayName: document.getElementById('club-display-name').value, pw: document.getElementById('club-pw').value || "0000", locked: isLocked }; localStorage.setItem('clubDetailedSettings', JSON.stringify(info)); document.getElementById('club-title-header').innerText = info.displayName || "설정"; }
+
+    function saveClubDetailedInfo() { var isLocked = document.getElementById('club-lock').checked; var info = { memberId: document.getElementById('club-member-id').value, nameKor: document.getElementById('club-name-kor').value, nameEng: document.getElementById('club-name-eng').value, lastKor: document.getElementById('club-last-kor').value, lastEng: document.getElementById('club-last-eng').value, displayName: document.getElementById('club-display-name').value, pw: document.getElementById('club-pw').value || "0000", locked: isLocked }; localStorage.setItem(STORAGE_KEY, JSON.stringify(info)); document.getElementById('club-title-header').innerText = info.displayName || "설정"; }
     function applyLockUI(locked) { var ids = ['club-member-id', 'club-name-kor', 'club-name-eng', 'club-last-kor', 'club-last-eng', 'club-display-name', 'club-pw']; ids.forEach(function(id) { document.getElementById(id).disabled = locked; }); }
-    document.getElementById('club-lock').onchange = function(e) { var saved = JSON.parse(localStorage.getItem('clubDetailedSettings')) || { pw: "0000" }; if (!e.target.checked) { var input = prompt("정보 수정을 위해 암호 4자리를 입력하세요."); if (input !== saved.pw) { alert("암호가 일치하지 않습니다."); e.target.checked = true; return; } } applyLockUI(e.target.checked); saveClubDetailedInfo(); };
+    
+    document.getElementById('club-lock').onchange = function(e) { 
+        var saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { pw: "0000" }; 
+        if (!e.target.checked) { 
+            var input = prompt("정보 수정을 위해 암호 4자리를 입력하세요."); 
+            if (input !== saved.pw) { alert("암호가 일치하지 않습니다."); e.target.checked = true; return; } 
+        } 
+        applyLockUI(e.target.checked); saveClubDetailedInfo(); 
+    };
+
     document.getElementById('open-club-settings').onclick = function() { document.getElementById('settings-main-view').style.display = 'none'; document.getElementById('club-settings-view').style.display = 'block'; };
     document.getElementById('club-save-back').onclick = function() { saveClubDetailedInfo(); document.getElementById('club-settings-view').style.display = 'none'; document.getElementById('settings-main-view').style.display = 'block'; };
 
     document.getElementById('join-go-btn').onclick = function() {
-        var info = JSON.parse(localStorage.getItem('clubDetailedSettings')) || { memberId: "82y2103596", nameKor: "민영", nameEng: "MIN YEONG", lastKor: "오", lastEng: "OH" };
+        var info = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { memberId: "82y2103596", nameKor: "민영", nameEng: "MIN YEOUNG", lastKor: "오", lastEng: "OH" };
         var popupTxt = "Sponsor: " + info.lastKor + info.nameKor + "(" + info.memberId + ")\nFirst Name : " + info.nameKor + "(" + info.nameEng + ")  Last Name : " + info.lastKor + "(" + info.lastEng + ")";
         alert(popupTxt); window.open('https://www.herbalife-application.com/kakao/join/joinMainindex.html', '_blank');
     };
